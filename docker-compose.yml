@@ -1,0 +1,61 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: goldsangsa-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: goldsangsa
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    # 외부 접근 차단 - Docker 내부 통신만 허용
+    # ports:
+    #   - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - goldsangsa
+
+  backend:
+    build: ./backend
+    container_name: goldsangsa-backend
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: goldsangsa
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: "${POSTGRES_PASSWORD}"
+      JWT_SECRET: "${JWT_SECRET}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD}"
+      FRONTEND_URL: http://localhost:3000
+    ports:
+      - '4000:4000'
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      - postgres
+    networks:
+      - goldsangsa
+
+  frontend:
+    build: ./frontend
+    container_name: goldsangsa-frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000/api
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+    networks:
+      - goldsangsa
+
+volumes:
+  postgres_data:
+  uploads_data:
+
+networks:
+  goldsangsa:
+    driver: bridge
