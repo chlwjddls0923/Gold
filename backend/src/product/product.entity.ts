@@ -34,6 +34,9 @@ export class Product {
   @Column({ nullable: true })
   inquiryUrl: string
 
+  @Column({ nullable: true })
+  inquiryLabel: string
+
   @ManyToOne(() => Category, (category) => category.products, { nullable: true, eager: true })
   category: Category
 

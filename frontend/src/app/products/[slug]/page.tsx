@@ -22,8 +22,9 @@ export default async function ProductDetailPage({
 
   if (!product) notFound()
 
-  const inquiryUrl = product.inquiryUrl || settings.inquiry_url || '/contact'
-  const isExternal = inquiryUrl.startsWith('http')
+  const inquiryUrl = product.inquiryUrl || null
+  const isExternal = inquiryUrl?.startsWith('http') ?? false
+  const inquiryLabel = product.inquiryLabel || '구매 문의'
 
   const detailBlocks: DetailBlock[] = product.detailImages
     ? (JSON.parse(product.detailImages) as (string | DetailBlock)[]).map((item) =>
@@ -71,16 +72,18 @@ export default async function ProductDetailPage({
               </p>
             </div>
           )}
-          <div className="mt-8">
-            <Link
-              href={inquiryUrl}
-              target={isExternal ? '_blank' : undefined}
-              rel={isExternal ? 'noopener noreferrer' : undefined}
-              className="inline-block bg-gray-900 text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors"
-            >
-              구매 문의
-            </Link>
-          </div>
+          {inquiryUrl && (
+            <div className="mt-8">
+              <Link
+                href={inquiryUrl}
+                target={isExternal ? '_blank' : undefined}
+                rel={isExternal ? 'noopener noreferrer' : undefined}
+                className="inline-block bg-gray-900 text-white px-8 py-3 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors"
+              >
+                {inquiryLabel}
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 

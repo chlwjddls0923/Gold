@@ -36,4 +36,9 @@ export class CreateProductDto {
   @IsString()
   @IsOptional()
   inquiryUrl?: string
+
+  @ApiPropertyOptional({ example: '스마트스토어 바로가기' })
+  @IsString()
+  @IsOptional()
+  inquiryLabel?: string
 }

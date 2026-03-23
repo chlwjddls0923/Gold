@@ -17,6 +17,7 @@ export interface Product {
   isActive: boolean
   detailImages: string | null  // JSON string[]
   inquiryUrl: string | null
+  inquiryLabel: string | null
   category: Category | null
   createdAt: string
 }

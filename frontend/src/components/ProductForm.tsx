@@ -29,6 +29,7 @@ interface ProductFormProps {
     imageUrl: string
     detailImages: string | null
     inquiryUrl: string | null
+    inquiryLabel: string | null
   }
   onSuccess?: () => void
 }
@@ -43,6 +44,7 @@ export default function ProductForm({ productId, initialData, onSuccess }: Produ
   const [categoryId, setCategoryId] = useState<number | ''>(initialData?.categoryId ?? '')
   const [isActive, setIsActive] = useState(initialData?.isActive ?? true)
   const [inquiryUrl, setInquiryUrl] = useState(initialData?.inquiryUrl ?? '')
+  const [inquiryLabel, setInquiryLabel] = useState(initialData?.inquiryLabel ?? '')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState(
     initialData?.imageUrl ? `${BASE_URL}${initialData.imageUrl}` : ''
@@ -205,6 +207,7 @@ export default function ProductForm({ productId, initialData, onSuccess }: Produ
     if (categoryId) formData.append('categoryId', String(categoryId))
     if (imageFile) formData.append('image', imageFile)
     if (inquiryUrl) formData.append('inquiryUrl', inquiryUrl)
+    if (inquiryLabel) formData.append('inquiryLabel', inquiryLabel)
 
     const url = isEdit ? `${API_URL}/products/${productId}` : `${API_URL}/products`
     const res = await fetch(url, {
@@ -315,6 +318,11 @@ export default function ProductForm({ productId, initialData, onSuccess }: Produ
           type="text" value={inquiryUrl} onChange={(e) => setInquiryUrl(e.target.value)}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-900"
           placeholder="예) https://smartstore.naver.com/..."
+        />
+        <input
+          type="text" value={inquiryLabel} onChange={(e) => setInquiryLabel(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-900 mt-2"
+          placeholder="버튼 이름 (미입력 시 '구매 문의')"
         />
       </div>
 
