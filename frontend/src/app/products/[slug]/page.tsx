@@ -58,7 +58,7 @@ export default async function ProductDetailPage({
             <p className="text-sm text-gray-400 mb-2">{product.category.name}</p>
           )}
           <h1 className="text-3xl font-bold text-gray-900 mb-4">{product.name}</h1>
-          {product.price != null && (
+          {product.price != null && Number(product.price) > 0 && (
             <p className="text-2xl font-bold text-blue-600 mb-6">
               {Number(product.price).toLocaleString()}원
             </p>

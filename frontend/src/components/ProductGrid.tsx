@@ -152,7 +152,7 @@ export default function ProductGrid({ products, categories, categoryId }: Props)
                 </div>
                 {product.category && <p className="text-xs text-gray-400 mb-0.5">{product.category.name}</p>}
                 <p className="text-sm font-semibold text-gray-900">{product.name}</p>
-                {product.price != null && (
+                {product.price != null && Number(product.price) > 0 && (
                   <p className="text-sm text-blue-600 font-bold mt-0.5">{Number(product.price).toLocaleString()}원</p>
                 )}
               </Link>

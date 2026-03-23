@@ -61,9 +61,11 @@ export default async function HomePage() {
                     <p className="text-xs text-gray-400 mb-1">{product.category.name}</p>
                   )}
                   <p className="font-semibold text-gray-900">{product.name}</p>
-                  <p className="text-blue-600 font-bold mt-1">
-                    {Number(product.price).toLocaleString()}원
-                  </p>
+                  {product.price != null && Number(product.price) > 0 && (
+                    <p className="text-blue-600 font-bold mt-1">
+                      {Number(product.price).toLocaleString()}원
+                    </p>
+                  )}
                 </div>
               </Link>
             ))}
