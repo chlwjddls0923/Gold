@@ -28,6 +28,7 @@ interface ProductFormProps {
     isActive: boolean
     imageUrl: string
     detailImages: string | null
+    inquiryUrl: string | null
   }
   onSuccess?: () => void
 }
@@ -41,6 +42,7 @@ export default function ProductForm({ productId, initialData, onSuccess }: Produ
   const [description, setDescription] = useState(initialData?.description ?? '')
   const [categoryId, setCategoryId] = useState<number | ''>(initialData?.categoryId ?? '')
   const [isActive, setIsActive] = useState(initialData?.isActive ?? true)
+  const [inquiryUrl, setInquiryUrl] = useState(initialData?.inquiryUrl ?? '')
   const [imageFile, setImageFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState(
     initialData?.imageUrl ? `${BASE_URL}${initialData.imageUrl}` : ''
@@ -200,6 +202,7 @@ export default function ProductForm({ productId, initialData, onSuccess }: Produ
     formData.append('isActive', String(isActive))
     if (categoryId) formData.append('categoryId', String(categoryId))
     if (imageFile) formData.append('image', imageFile)
+    if (inquiryUrl) formData.append('inquiryUrl', inquiryUrl)
 
     const url = isEdit ? `${API_URL}/products/${productId}` : `${API_URL}/products`
     const res = await fetch(url, {
@@ -300,6 +303,16 @@ export default function ProductForm({ productId, initialData, onSuccess }: Produ
           value={description} onChange={(e) => setDescription(e.target.value)} rows={3}
           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-900 resize-none"
           placeholder="상품 상단에 표시될 짧은 설명"
+        />
+      </div>
+
+      {/* 구매 문의 링크 */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">구매 문의 링크</label>
+        <input
+          type="text" value={inquiryUrl} onChange={(e) => setInquiryUrl(e.target.value)}
+          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-gray-900"
+          placeholder="예) https://smartstore.naver.com/..."
         />
       </div>
 

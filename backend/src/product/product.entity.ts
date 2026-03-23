@@ -31,6 +31,9 @@ export class Product {
   @Column({ type: 'text', nullable: true })
   detailImages: string // JSON string[]
 
+  @Column({ nullable: true })
+  inquiryUrl: string
+
   @ManyToOne(() => Category, (category) => category.products, { nullable: true, eager: true })
   category: Category
 

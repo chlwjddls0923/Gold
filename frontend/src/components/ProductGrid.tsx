@@ -214,12 +214,12 @@ function ProductModal({ title, onClose, children }: { title: string; onClose: ()
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl">
+      <div className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] flex flex-col shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 flex-shrink-0 rounded-t-2xl">
           <h2 className="text-base font-bold text-gray-900">{title}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-2xl leading-none">×</button>
         </div>
-        <div className="p-6">{children}</div>
+        <div className="overflow-y-auto flex-1 p-6">{children}</div>
       </div>
     </div>
   )

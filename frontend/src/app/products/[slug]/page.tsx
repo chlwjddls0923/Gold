@@ -22,7 +22,7 @@ export default async function ProductDetailPage({
 
   if (!product) notFound()
 
-  const inquiryUrl = settings.inquiry_url || '/contact'
+  const inquiryUrl = product.inquiryUrl || settings.inquiry_url || '/contact'
   const isExternal = inquiryUrl.startsWith('http')
 
   const detailBlocks: DetailBlock[] = product.detailImages

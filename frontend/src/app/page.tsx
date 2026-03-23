@@ -21,10 +21,11 @@ export default async function HomePage() {
     : []
   const heroInterval = settings.hero_interval ? Number(settings.hero_interval) : 3
   const heroButtonLabel = settings.hero_button_label ?? '제품보기'
+  const heroMode = (settings.hero_mode as 'timer' | 'arrow') ?? 'timer'
 
   return (
     <div>
-      <HeroSlider images={heroImages} interval={heroInterval} buttonLabel={heroButtonLabel} />
+      <HeroSlider images={heroImages} interval={heroInterval} buttonLabel={heroButtonLabel} mode={heroMode} />
 
       {/* 브랜드 소개 한 줄 */}
       <section className="bg-gray-50 py-6 text-center text-sm text-gray-500">

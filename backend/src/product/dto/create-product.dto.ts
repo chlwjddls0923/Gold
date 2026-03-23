@@ -31,4 +31,9 @@ export class CreateProductDto {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean
+
+  @ApiPropertyOptional({ example: 'https://smartstore.naver.com/...' })
+  @IsString()
+  @IsOptional()
+  inquiryUrl?: string
 }

@@ -13,8 +13,16 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }))
 
+  const allowedOrigins = [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'https://www.goldsangsa.com',
+    'https://goldsangsa.com',
+  ]
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) callback(null, true)
+      else callback(new Error('Not allowed by CORS'))
+    },
     credentials: true,
   })
 

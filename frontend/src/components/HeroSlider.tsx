@@ -15,21 +15,25 @@ interface HeroSliderProps {
   images: HeroImage[]
   interval?: number
   buttonLabel?: string
+  mode?: 'timer' | 'arrow'
 }
 
-export default function HeroSlider({ images, interval = 3, buttonLabel = '제품보기' }: HeroSliderProps) {
+export default function HeroSlider({ images, interval = 3, buttonLabel = '제품보기', mode = 'timer' }: HeroSliderProps) {
   const [current, setCurrent] = useState(0)
   const [showEdit, setShowEdit] = useState(false)
   const { isAdmin, token } = useAdmin()
   const router = useRouter()
 
   useEffect(() => {
-    if (images.length <= 1) return
+    if (images.length <= 1 || mode !== 'timer') return
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % images.length)
     }, interval * 1000)
     return () => clearInterval(timer)
-  }, [images.length, interval])
+  }, [images.length, interval, mode])
+
+  const prev = () => setCurrent((c) => (c - 1 + images.length) % images.length)
+  const next = () => setCurrent((c) => (c + 1) % images.length)
 
   const currentLink = images[current]?.link ?? ''
 
@@ -48,6 +52,30 @@ export default function HeroSlider({ images, interval = 3, buttonLabel = '제품
           ))
         ) : (
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-400" />
+        )}
+
+        {/* 화살표 */}
+        {mode === 'arrow' && images.length > 1 && (
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 bg-black/40 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+              aria-label="이전 배너"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 bg-black/40 hover:bg-black/70 text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+              aria-label="다음 배너"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </>
         )}
 
         {/* 버튼 + 점 인디케이터 */}
@@ -95,6 +123,7 @@ export default function HeroSlider({ images, interval = 3, buttonLabel = '제품
           images={images}
           interval={interval}
           buttonLabel={buttonLabel}
+          mode={mode}
           token={token}
           onClose={() => setShowEdit(false)}
           onSaved={() => { router.refresh() }}
@@ -108,6 +137,7 @@ function HeroBannerEditModal({
   images: initialImages,
   interval: initialInterval,
   buttonLabel: initialButtonLabel,
+  mode: initialMode,
   token,
   onClose,
   onSaved,
@@ -115,6 +145,7 @@ function HeroBannerEditModal({
   images: HeroImage[]
   interval: number
   buttonLabel: string
+  mode: 'timer' | 'arrow'
   token: string | null
   onClose: () => void
   onSaved: () => void
@@ -126,6 +157,7 @@ function HeroBannerEditModal({
   )
   const [currentInterval, setCurrentInterval] = useState(initialInterval)
   const [btnLabel, setBtnLabel] = useState(initialButtonLabel)
+  const [currentMode, setCurrentMode] = useState<'timer' | 'arrow'>(initialMode)
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState('')
   const [newLink, setNewLink] = useState('')
@@ -210,6 +242,17 @@ function HeroBannerEditModal({
     onSaved()
   }
 
+  const saveMode = async (mode: 'timer' | 'arrow') => {
+    setCurrentMode(mode)
+    await fetch(`${API_URL}/site-settings`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ hero_mode: mode }),
+    })
+    showMsg('슬라이드 방식이 저장되었습니다.')
+    onSaved()
+  }
+
   const saveButtonLabel = async () => {
     await fetch(`${API_URL}/site-settings`, {
       method: 'PUT',
@@ -236,8 +279,57 @@ function HeroBannerEditModal({
             <div className="px-4 py-2 bg-green-50 text-green-700 text-sm rounded-lg border border-green-200">{msg}</div>
           )}
 
-          {/* 등록된 이미지 */}
+          {/* 슬라이드 방식 */}
           <div>
+            <p className="text-sm font-medium text-gray-700 mb-3">슬라이드 방식</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => saveMode('timer')}
+                className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
+                  currentMode === 'timer'
+                    ? 'bg-gray-900 text-white border-gray-900'
+                    : 'border-gray-300 text-gray-600 hover:border-gray-900'
+                }`}
+              >
+                ⏱ 타이머 자동 전환
+              </button>
+              <button
+                onClick={() => saveMode('arrow')}
+                className={`flex-1 py-2.5 rounded-lg text-sm font-medium border transition-colors ${
+                  currentMode === 'arrow'
+                    ? 'bg-gray-900 text-white border-gray-900'
+                    : 'border-gray-300 text-gray-600 hover:border-gray-900'
+                }`}
+              >
+                ← 화살표 수동 전환
+              </button>
+            </div>
+          </div>
+
+          {/* 전환 속도 (타이머 모드일 때만) */}
+          {currentMode === 'timer' && (
+            <div className="border-t border-gray-100 pt-5">
+              <p className="text-sm font-medium text-gray-700 mb-3">전환 속도</p>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((sec) => (
+                  <button
+                    key={sec}
+                    onClick={() => saveInterval(sec)}
+                    className={`w-11 h-10 rounded-lg text-sm font-medium border transition-colors ${
+                      currentInterval === sec
+                        ? 'bg-gray-900 text-white border-gray-900'
+                        : 'border-gray-300 text-gray-600 hover:border-gray-900'
+                    }`}
+                  >
+                    {sec}초
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 등록된 이미지 */}
+          <div className="border-t border-gray-100 pt-5">
             <p className="text-sm font-medium text-gray-700 mb-3">등록된 이미지 ({localImages.length}장)</p>
             {localImages.length === 0 ? (
               <p className="text-sm text-gray-400 py-6 text-center border border-dashed border-gray-200 rounded-lg">등록된 이미지 없음</p>
@@ -319,26 +411,6 @@ function HeroBannerEditModal({
               >
                 저장
               </button>
-            </div>
-          </div>
-
-          {/* 전환 속도 */}
-          <div className="border-t border-gray-100 pt-5">
-            <p className="text-sm font-medium text-gray-700 mb-3">전환 속도</p>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((sec) => (
-                <button
-                  key={sec}
-                  onClick={() => saveInterval(sec)}
-                  className={`w-11 h-10 rounded-lg text-sm font-medium border transition-colors ${
-                    currentInterval === sec
-                      ? 'bg-gray-900 text-white border-gray-900'
-                      : 'border-gray-300 text-gray-600 hover:border-gray-900'
-                  }`}
-                >
-                  {sec}초
-                </button>
-              ))}
             </div>
           </div>
         </div>
