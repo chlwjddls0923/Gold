@@ -14,7 +14,7 @@ import { SiteSettingsModule } from './site-settings/site-settings.module'
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
 
-    ThrottlerModule.forRoot([{ ttl: 60000, limit: 5 }]),
+    ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
 
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

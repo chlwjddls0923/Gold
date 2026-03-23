@@ -66,7 +66,9 @@ export default function ProductForm({ productId, initialData, onSuccess }: Produ
   const imageInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    fetch(`${API_URL}/categories`).then((r) => r.json()).then(setCategories)
+    fetch(`${API_URL}/categories`)
+      .then((r) => r.ok ? r.json() : [])
+      .then((data) => setCategories(Array.isArray(data) ? data : []))
   }, [])
 
   const token = () => localStorage.getItem('adminToken')
