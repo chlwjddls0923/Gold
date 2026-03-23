@@ -199,6 +199,7 @@ export default function ProductGrid({ products, categories, categoryId }: Props)
               isActive: editProduct.isActive,
               imageUrl: editProduct.imageUrl ?? '',
               detailImages: editProduct.detailImages ?? null,
+              inquiryUrl: editProduct.inquiryUrl ?? null,
             }}
             onSuccess={handleSuccess}
           />

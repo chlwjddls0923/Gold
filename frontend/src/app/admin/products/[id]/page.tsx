@@ -27,6 +27,7 @@ export default async function EditProductPage({
           isActive: product.isActive,
           imageUrl: product.imageUrl ?? '',
           detailImages: product.detailImages ?? null,
+          inquiryUrl: product.inquiryUrl ?? null,
         }}
       />
     </div>
