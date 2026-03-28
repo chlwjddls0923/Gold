@@ -137,9 +137,9 @@ export default function ProductGrid({ products, categories, categoryId }: Props)
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           {sortedProducts.map((product) => (
-            <div key={product.id} className="group relative">
+            <div key={product.id} className="group relative border border-gray-100 rounded-lg overflow-hidden hover:shadow-md transition-shadow">
               <Link href={`/products/${product.id}`}>
-                <div className="relative aspect-square bg-gray-100 rounded-lg overflow-hidden mb-3">
+                <div className="relative aspect-square bg-gray-100 overflow-hidden mb-3">
                   {product.imageUrl && (
                     <Image
                       src={`${BASE_URL}${product.imageUrl}`}
@@ -150,16 +150,18 @@ export default function ProductGrid({ products, categories, categoryId }: Props)
                     />
                   )}
                 </div>
+                <div className="px-3 pb-3">
                 {product.category && <p className="text-xs text-gray-400 mb-0.5">{product.category.name}</p>}
                 <p className="text-sm font-semibold text-gray-900">{product.name}</p>
                 {product.price != null && Number(product.price) > 0 && (
                   <p className="text-sm text-blue-600 font-bold mt-0.5">{Number(product.price).toLocaleString()}원</p>
                 )}
+                </div>
               </Link>
 
               {/* 관리자 편집/삭제 버튼 */}
               {isAdmin && (
-                <div className="flex gap-1 mt-2">
+                <div className="flex gap-1 mt-2 px-3 pb-3">
                   <button
                     onClick={() => setEditProduct(product)}
                     className="flex-1 text-xs border border-gray-300 text-gray-600 py-1 rounded-lg hover:border-gray-900 hover:text-gray-900 transition-colors"
