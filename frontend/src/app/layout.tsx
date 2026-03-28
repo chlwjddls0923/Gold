@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ko" className={geist.className}>
+    <html lang="ko" className={geist.className} style={{ colorScheme: 'light' }}>
       <head>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-Q7WWTJSNDY"
